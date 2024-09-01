@@ -1,5 +1,5 @@
 {
-    "algo_name": "cql",
+    "algo_name": "tdmpc2_bc",
     "experiment": {
         "name": "test",
         "validate": false,
@@ -19,25 +19,25 @@
         "save": {
             "enabled": true,
             "every_n_seconds": null,
-            "every_n_epochs": 50,
+            "every_n_epochs": 20,
             "epochs": [],
             "on_best_validation": true,
-            "on_best_rollout_return": false,
-            "on_best_rollout_success_rate": true
+            "on_best_rollout_return": true,
+            "on_best_rollout_success_rate": false
         },
-        "epoch_every_n_steps": 100,
+        "epoch_every_n_steps": 5000,
         "validation_epoch_every_n_steps": 10,
         "env": null,
         "additional_envs": null,
         "render": false,
-        "render_video": true,
+        "render_video": false,
         "keep_all_videos": false,
         "video_skip": 5,
         "rollout": {
             "enabled": true,
             "n": 50,
-            "horizon": 400,
-            "rate": 50,
+            "horizon": 1000,
+            "rate": 1,
             "warmstart": 0,
             "terminate_on_success": true,
             "batched": false,
@@ -48,12 +48,12 @@
     },
     "train": {
         "data": null,
-        "output_dir": "../cql_trained_models",
+        "output_dir": "../tdmpc2_bc_trained_models",
         "num_data_workers": 0,
         "hdf5_cache_mode": "all",
         "hdf5_use_swmr": true,
         "hdf5_load_next_obs": true,
-        "hdf5_normalize_obs": false,
+        "hdf5_normalize_obs": true,
         "hdf5_filter_key": null,
         "hdf5_validation_filter_key": null,
         "seq_length": 1,
@@ -71,8 +71,8 @@
         "action_config": {},
         "goal_mode": null,
         "cuda": true,
-        "batch_size": 1024,
-        "num_epochs": 2000,
+        "batch_size": 256,
+        "num_epochs": 200,
         "seed": 1,
         "max_grad_norm": null,
         "data_format": "robomimic",
@@ -80,79 +80,83 @@
     },
     "algo": {
         "optim_params": {
-            "critic": {
-                "learning_rate": {
-                    "initial": 0.001,
-                    "decay_factor": 0.0,
-                    "epoch_schedule": []
-                },
-                "regularization": {
-                    "L2": 0.0
-                }
-            },
-            "actor": {
+            "model": {
                 "learning_rate": {
                     "initial": 0.0003,
-                    "decay_factor": 0.0,
-                    "epoch_schedule": []
+                    "decay_factor": 0.1,
+                    "epoch_schedule": [],
+                    "scheduler_type": "linear"
                 },
                 "regularization": {
                     "L2": 0.0
-                }
+                },
+                "start_epoch": -1,
+                "end_epoch": -1,
+                "optimizer_type": "adam"
+            },
+            "encoder": {
+                "learning_rate": {
+                    "initial": 0.0003,
+                    "decay_factor": 0.1,
+                    "epoch_schedule": [],
+                    "scheduler_type": "linear"
+                },
+                "regularization": {
+                    "L2": 0.0
+                },
+                "start_epoch": -1,
+                "end_epoch": -1,
+                "optimizer_type": "adam"
+            },
+            "pi": {
+                "learning_rate": {
+                    "initial": 0.0003,
+                    "decay_factor": 0.1,
+                    "epoch_schedule": [],
+                    "scheduler_type": "linear"
+                },
+                "regularization": {
+                    "L2": 0.0
+                },
+                "start_epoch": -1,
+                "end_epoch": -1,
+                "optimizer_type": "adam"
             }
         },
+        "alpha": 2.5,
         "discount": 0.99,
         "n_step": 1,
         "target_tau": 0.005,
-        "actor": {
-            "bc_start_steps": 0,
-            "target_entropy": "default",
-            "max_gradient_norm": null,
-            "net": {
-                "type": "gaussian",
-                "common": {
-                    "std_activation": "exp",
-                    "use_tanh": true,
-                    "low_noise_eval": true
-                },
-                "gaussian": {
-                    "init_last_fc_weight": 0.001,
-                    "init_std": 0.3,
-                    "fixed_std": false
-                }
-            },
-            "layer_dims": [
-                300,
-                400
-            ]
-        },
+        "infinite_horizon": false,
         "critic": {
             "use_huber": false,
             "max_gradient_norm": null,
             "value_bounds": null,
-            "num_action_samples": 1,
-            "cql_weight": 1.0,
-            "deterministic_backup": true,
-            "min_q_weight": 1.0,
-            "target_q_gap": 5.0,
-            "num_random_actions": 10,
             "ensemble": {
-                "n": 2
+                "n": 2,
+                "weight": 1.0
             },
             "layer_dims": [
-                300,
-                400
+                256,
+                256
             ]
-        }
+        },
+        "actor": {
+            "update_freq": 2,
+            "noise_std": 0.2,
+            "noise_clip": 0.5,
+            "layer_dims": [
+                256,
+                256
+            ]
+        },
+        "language_conditioned": false
     },
     "observation": {
         "modalities": {
             "obs": {
                 "low_dim": [
-                    "robot0_eef_pos",
-                    "robot0_eef_quat",
-                    "robot0_gripper_qpos",
-                    "object"
+                    "flat"
                 ],
                 "rgb": [],
                 "depth": [],

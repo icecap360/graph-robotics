@@ -1,0 +1,42 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "train.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "/home/qasim/Projects/robomimic/robomimic/scripts/train.py",
+            "console": "integratedTerminal",
+            "args": ["--config","/home/qasim/Projects/robomimic/configs/multitask_langcond_human+mg_bctrans.json"]
+            // bc /home/qasim/tmp/autogen_configs/ril/bc/robocasa/im/08-12-PnPSinkToCounter/08-12-24-10-40-54/json/seed_123_ds_human-50.json
+            // llm /home/qasim/tmp/autogen_configs/ril/llm/robocasa/im/08-13-llm/08-13-24-11-40-16/json/seed_123_ds_PreSoakPan.json
+        },
+        {
+            "name": "TD-MPC2",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "/home/qasim/Projects/robomimic/robomimic/scripts/train.py",
+            "console": "integratedTerminal",
+            "args": ["--config","/home/qasim/Projects/robomimic/configs/multitask_langcond_human+mg_tdmpc2.json"]
+        },
+        {
+            "name": "generate_config_templates",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "/home/qasim/Projects/robomimic/robomimic/scripts/generate_config_templates.py",
+            "console": "integratedTerminal",
+            // "args": ["--config","/home/qasim/tmp/autogen_configs/ril/bc/robocasa/im/08-11-PnPCounterToSink/08-11-24-14-00-35/json/seed_123_ds_human-50.json"]
+        },   
+        {
+            "name": "run_trained_agent",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "/home/qasim/Projects/robomimic/robomimic/scripts/run_trained_agent.py",
+            "console": "integratedTerminal",
+            "args": ["--agent", "~/Projects/results/robocasa/im-bc_xfmr/08-12-PnPCounterToSink/seed_123_ds_human-50/models/model_epoch_5.pth", "--n_rollouts", "5", "--horizon", "400", "--seed", "0", "--dataset_path", "~/Projects/results/robocasa/im-bc_xfmr/08-11-PnPCounterToSink/seed_123_ds_human-50/20240811143205/videos/output.hdf5", "--dataset_obs"]
+        },   
+     ]
+}

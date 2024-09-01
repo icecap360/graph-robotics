@@ -1,5 +1,5 @@
 {
-    "algo_name": "cql",
+    "algo_name": "llm",
     "experiment": {
         "name": "test",
         "validate": false,
@@ -48,11 +48,11 @@
     },
     "train": {
         "data": null,
-        "output_dir": "../cql_trained_models",
+        "output_dir": "../llm_trained_models",
         "num_data_workers": 0,
         "hdf5_cache_mode": "all",
         "hdf5_use_swmr": true,
-        "hdf5_load_next_obs": true,
+        "hdf5_load_next_obs": false,
         "hdf5_normalize_obs": false,
         "hdf5_filter_key": null,
         "hdf5_validation_filter_key": null,
@@ -71,7 +71,7 @@
         "action_config": {},
         "goal_mode": null,
         "cuda": true,
-        "batch_size": 1024,
+        "batch_size": 100,
         "num_epochs": 2000,
         "seed": 1,
         "max_grad_norm": null,
@@ -80,70 +80,58 @@
     },
     "algo": {
         "optim_params": {
-            "critic": {
+            "policy": {
+                "optimizer_type": "adamw",
                 "learning_rate": {
-                    "initial": 0.001,
-                    "decay_factor": 0.0,
-                    "epoch_schedule": []
+                    "initial": 5e-05,
+                    "decay_factor": 1,
+                    "epoch_schedule": [],
+                    "scheduler_type": "linear"
                 },
                 "regularization": {
-                    "L2": 0.0
-                }
-            },
-            "actor": {
-                "learning_rate": {
-                    "initial": 0.0003,
-                    "decay_factor": 0.0,
-                    "epoch_schedule": []
-                },
-                "regularization": {
-                    "L2": 0.0
+                    "L2": 0.0001
                 }
             }
         },
-        "discount": 0.99,
-        "n_step": 1,
-        "target_tau": 0.005,
-        "actor": {
-            "bc_start_steps": 0,
-            "target_entropy": "default",
-            "max_gradient_norm": null,
-            "net": {
-                "type": "gaussian",
-                "common": {
-                    "std_activation": "exp",
-                    "use_tanh": true,
-                    "low_noise_eval": true
-                },
-                "gaussian": {
-                    "init_last_fc_weight": 0.001,
-                    "init_std": 0.3,
-                    "fixed_std": false
-                }
-            },
-            "layer_dims": [
-                300,
-                400
-            ]
+        "horizon": 5,
+        "instruction": "Pick the pan and sponge and place them into the sink. Then turn on the sink.",
+        "policies_api": {
+            "PickPlaceCounterToSink": "PickPlaceCounterToSink",
+            "PickPlaceSinkToCounter": "PickPlaceSinkToCounter",
+            "CloseDoubleDoor": "CloseDoubleDoor",
+            "TurnOnSinkFaucet": "TurnOnSinkFaucet",
+            "TurnOffSinkFaucet": "TurnOffSinkFaucet",
+            "PickPlaceCabinetToCounter": "PickPlaceCabinetToCounter",
+            "PickPlaceCounterToCabinet": "PickPlaceCounterToCabinet",
+            "PickPlaceCounterToMicrowave": "PickPlaceCounterToMicrowave",
+            "PickPlaceMicrowaveToCounter": "PickPlaceMicrowaveToCounter",
+            "Terminate": "Terminate"
         },
-        "critic": {
-            "use_huber": false,
-            "max_gradient_norm": null,
-            "value_bounds": null,
-            "num_action_samples": 1,
-            "cql_weight": 1.0,
-            "deterministic_backup": true,
-            "min_q_weight": 1.0,
-            "target_q_gap": 5.0,
-            "num_random_actions": 10,
-            "ensemble": {
-                "n": 2
-            },
-            "layer_dims": [
-                300,
-                400
-            ]
-        }
+        "policies_apitype": {
+            "PickPlaceCounterToSink": "PnP",
+            "PickPlaceSinkToCounter": "PnP",
+            "CloseDoubleDoor": "OpenClose",
+            "TurnOnSinkFaucet": "OnOff",
+            "TurnOffSinkFaucet": "OnOff",
+            "PickPlaceCabinetToCounter": "PnP",
+            "PickPlaceCounterToCabinet": "PnP",
+            "PickPlaceCounterToMicrowave": "PnP",
+            "PickPlaceMicrowaveToCounter": "PnP",
+            "Terminate": "Terminate"
+        },
+        "policies_info": {
+            "PickPlaceCounterToSink": "Pick an object from the counter and place it in the sink.",
+            "PickPlaceSinkToCounter": "Pick an object from the sink and place it on the counter area next to the sink.",
+            "CloseDoubleDoor": "Close a cabinet with two opposite-facing doors.",
+            "TurnOnSinkFaucet": "Turn on the sink faucet to begin the flow of water.",
+            "TurnOffSinkFaucet": "Turn off the sink faucet to begin the flow of water.",
+            "PickPlaceCabinetToCounter": "Pick an object from the cabinet and place it on the counter. The cabinet is already open.",
+            "PickPlaceCounterToCabinet": "Pick an object from the counter and place it inside the cabinet. The cabinet is already open.",
+            "PickPlaceCounterToMicrowave": "Pick an object from the counter and place it inside the microwave. The microwave door is already open.",
+            "PickPlaceMicrowaveToCounter": "Pick an object from inside the microwave and place it on the counter. The microwave door is already open.",
+            "Terminate": "End of action plan."
+        },
+        "manipulator_checkpoint": "/home/qasim/Projects/results/robocasa/im-bc_xfmr/08-12-lang_cond_policy/seed_123_ds_human-50/models/model_epoch_150.pth"
     },
     "observation": {
         "modalities": {

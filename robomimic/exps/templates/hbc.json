@@ -9,12 +9,19 @@
             "log_wandb": false,
             "wandb_proj_name": "debug"
         },
+        "mse": {
+            "enabled": false,
+            "every_n_epochs": 50,
+            "on_save_ckpt": true,
+            "num_samples": 20,
+            "visualize": true
+        },
         "save": {
             "enabled": true,
             "every_n_seconds": null,
             "every_n_epochs": 50,
             "epochs": [],
-            "on_best_validation": false,
+            "on_best_validation": true,
             "on_best_rollout_return": false,
             "on_best_rollout_success_rate": true
         },
@@ -32,8 +39,12 @@
             "horizon": 400,
             "rate": 50,
             "warmstart": 0,
-            "terminate_on_success": true
-        }
+            "terminate_on_success": true,
+            "batched": false,
+            "num_batch_envs": 5
+        },
+        "env_meta_update_dict": {},
+        "ckpt_path": null
     },
     "train": {
         "data": null,
@@ -54,11 +65,18 @@
             "rewards",
             "dones"
         ],
+        "action_keys": [
+            "actions"
+        ],
+        "action_config": {},
         "goal_mode": null,
         "cuda": true,
         "batch_size": 100,
         "num_epochs": 2000,
-        "seed": 1
+        "seed": 1,
+        "max_grad_norm": null,
+        "data_format": "robomimic",
+        "shuffled_obs_key_groups": null
     },
     "algo": {
         "mode": "separate",
@@ -135,7 +153,7 @@
                         "initial": 0.0001,
                         "decay_factor": 0.1,
                         "epoch_schedule": [],
-                        "scheduler_type": "multistep"
+                        "scheduler_type": "constant_with_warmup"
                     },
                     "regularization": {
                         "L2": 0.0
@@ -174,8 +192,11 @@
                 "sinusoidal_embedding": false,
                 "activation": "gelu",
                 "supervise_all_steps": false,
-                "nn_parameter_for_timesteps": true
-            }
+                "nn_parameter_for_timesteps": true,
+                "pred_future_acs": false,
+                "causal": true
+            },
+            "language_conditioned": false
         }
     },
     "observation": {

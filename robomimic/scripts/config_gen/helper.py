@@ -214,7 +214,7 @@ def set_mod_settings(generator, args):
                 key="experiment.save.every_n_epochs",
                 name="",
                 group=-1,
-                values=[100],
+                values=[5],
             )
 
         generator.add_param(
@@ -367,9 +367,8 @@ def set_debug_mode(generator, args):
 
 def set_output_dir(generator, args):
     assert args.name is not None
-
     vals = generator.parameters["train.output_dir"].values
-
+    
     for i in range(len(vals)):
         vals[i] = os.path.join(vals[i], args.name)
 
@@ -437,7 +436,7 @@ def get_argparser():
         "--ckpt_mode",
         type=str,
         choices=["off", "all", "best_only"],
-        default=None,
+        default="best_only",
     )
 
     parser.add_argument(
@@ -481,6 +480,7 @@ def get_argparser():
     parser.add_argument(
         "--no_wandb",
         action="store_true",
+        default=True
     )
 
     parser.add_argument(
@@ -528,6 +528,7 @@ def make_generator(args, make_generator_helper):
     # make config generator
     generator = make_generator_helper(args)
 
+    print('args.ckpt_mode', args.ckpt_mode)
     if args.ckpt_mode is None:
         if args.pt:
             args.ckpt_mode = "all"
@@ -554,6 +555,8 @@ def make_generator(args, make_generator_helper):
             False,
         ],
     )
+
+    
     if "experiment.save.on_best_rollout_success_rate" not in generator.parameters:
         generator.add_param(
             key="experiment.save.on_best_rollout_success_rate",
@@ -595,6 +598,8 @@ def get_ds_cfg(
 
     if exclude_ds_names is not None:
         ds_names = [name for name in ds_names if name not in exclude_ds_names]
+
+    print('src', src)
 
     ret = []
     for name in ds_names:

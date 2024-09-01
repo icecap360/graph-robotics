@@ -1,0 +1,283 @@
+{
+    "algo_name": "llm",
+    "experiment": {
+        "name": "seed_123_ds_PreSoakPan",
+        "validate": false,
+        "logging": {
+            "terminal_output_to_txt": true,
+            "log_tb": true,
+            "log_wandb": false,
+            "wandb_proj_name": "llm_08-13-llm_robocasa_im"
+        },
+        "mse": {
+            "enabled": false,
+            "every_n_epochs": 1,
+            "on_save_ckpt": true,
+            "num_samples": 20,
+            "visualize": true
+        },
+        "save": {
+            "enabled": true,
+            "every_n_seconds": null,
+            "every_n_epochs": 5,
+            "epochs": [],
+            "on_best_validation": true,
+            "on_best_rollout_return": false,
+            "on_best_rollout_success_rate": false
+        },
+        "epoch_every_n_steps": 1,
+        "validation_epoch_every_n_steps": 10,
+        "env": null,
+        "additional_envs": null,
+        "render": false,
+        "render_video": true,
+        "keep_all_videos": false,
+        "video_skip": 5,
+        "rollout": {
+            "enabled": true,
+            "n": 1,
+            "horizon": 4502,
+            "rate": 1,
+            "warmstart": 0,
+            "terminate_on_success": true,
+            "batched": false,
+            "num_batch_envs": 1
+        },
+        "env_meta_update_dict": {
+            "env_kwargs": {
+                "generative_textures": null,
+                "scene_split": null,
+                "style_ids": null,
+                "layout_ids": null,
+                "layout_and_style_ids": [
+                    [
+                        1,
+                        1
+                    ],
+                    [
+                        2,
+                        2
+                    ],
+                    [
+                        4,
+                        4
+                    ],
+                    [
+                        6,
+                        9
+                    ],
+                    [
+                        7,
+                        10
+                    ]
+                ],
+                "randomize_cameras": false,
+                "obj_instance_split": "B"
+            }
+        },
+        "ckpt_path": null
+    },
+    "train": {
+        "data": [
+            {
+                "horizon": 4502,
+                "do_eval": true,
+                "filter_key": "50_demos",
+                "path": "/pub2/data/qasim/robocasa/v0.1/multi_stage/washing_dishes/PreSoakPan/2024-05-10/demo_im128.hdf5"
+            }
+        ],
+        "output_dir": "~/Projects/results/robocasa/im-llm/08-13-llm",
+        "num_data_workers": 5,
+        "hdf5_cache_mode": null,
+        "hdf5_use_swmr": true,
+        "hdf5_load_next_obs": false,
+        "hdf5_normalize_obs": false,
+        "hdf5_filter_key": null,
+        "hdf5_validation_filter_key": null,
+        "seq_length": 10,
+        "pad_seq_length": true,
+        "frame_stack": 10,
+        "pad_frame_stack": true,
+        "dataset_keys": [
+            "actions",
+            "rewards",
+            "dones"
+        ],
+        "action_keys": [
+            "actions"
+        ],
+        "action_config": {
+            "actions": {
+                "normalization": null
+            },
+            "action_dict/abs_pos": {
+                "normalization": "min_max"
+            },
+            "action_dict/abs_rot_axis_angle": {
+                "normalization": "min_max",
+                "format": "rot_axis_angle"
+            },
+            "action_dict/abs_rot_6d": {
+                "normalization": null,
+                "format": "rot_6d"
+            },
+            "action_dict/rel_pos": {
+                "normalization": null
+            },
+            "action_dict/rel_rot_axis_angle": {
+                "normalization": null,
+                "format": "rot_axis_angle"
+            },
+            "action_dict/rel_rot_6d": {
+                "normalization": null,
+                "format": "rot_6d"
+            },
+            "action_dict/gripper": {
+                "normalization": null
+            },
+            "action_dict/base_mode": {
+                "normalization": null
+            }
+        },
+        "goal_mode": null,
+        "cuda": true,
+        "batch_size": 1,
+        "num_epochs": 1,
+        "seed": 123,
+        "max_grad_norm": null,
+        "data_format": "robomimic",
+        "shuffled_obs_key_groups": null
+    },
+    "algo": {
+        "optim_params": {
+            "policy": {
+                "optimizer_type": "adamw",
+                "learning_rate": {
+                    "initial": 5e-05,
+                    "decay_factor": 1,
+                    "epoch_schedule": [],
+                    "scheduler_type": "linear"
+                },
+                "regularization": {
+                    "L2": 0.0001
+                }
+            }
+        },
+        "horizon": 5,
+        "instruction": "Pick the pan and sponge and place them into the sink. Then turn on the sink.",
+        "policies_api": {
+            "PickPlaceCounterToSink": "PickPlaceCounterToSink",
+            "PickPlaceSinkToCounter": "PickPlaceSinkToCounter",
+            "CloseDoubleDoor": "CloseDoubleDoor",
+            "TurnOnSinkFaucet": "TurnOnSinkFaucet",
+            "TurnOffSinkFaucet": "TurnOffSinkFaucet",
+            "PickPlaceCabinetToCounter": "PickPlaceCabinetToCounter",
+            "PickPlaceCounterToCabinet": "PickPlaceCounterToCabinet",
+            "PickPlaceCounterToMicrowave": "PickPlaceCounterToMicrowave",
+            "PickPlaceMicrowaveToCounter": "PickPlaceMicrowaveToCounter",
+            "Terminate": "Terminate"
+        },
+        "policies_apitype": {
+            "PickPlaceCounterToSink": "PnP",
+            "PickPlaceSinkToCounter": "PnP",
+            "CloseDoubleDoor": "OpenClose",
+            "TurnOnSinkFaucet": "OnOff",
+            "TurnOffSinkFaucet": "OnOff",
+            "PickPlaceCabinetToCounter": "PnP",
+            "PickPlaceCounterToCabinet": "PnP",
+            "PickPlaceCounterToMicrowave": "PnP",
+            "PickPlaceMicrowaveToCounter": "PnP",
+            "Terminate": "Terminate"
+        },
+        "policies_info": {
+            "PickPlaceCounterToSink": "Pick an object from the counter and place it in the sink.",
+            "PickPlaceSinkToCounter": "Pick an object from the sink and place it on the counter area next to the sink.",
+            "CloseDoubleDoor": "Close a cabinet with two opposite-facing doors.",
+            "TurnOnSinkFaucet": "Turn on the sink faucet to begin the flow of water.",
+            "TurnOffSinkFaucet": "Turn off the sink faucet to begin the flow of water.",
+            "PickPlaceCabinetToCounter": "Pick an object from the cabinet and place it on the counter. The cabinet is already open.",
+            "PickPlaceCounterToCabinet": "Pick an object from the counter and place it inside the cabinet. The cabinet is already open.",
+            "PickPlaceCounterToMicrowave": "Pick an object from the counter and place it inside the microwave. The microwave door is already open.",
+            "PickPlaceMicrowaveToCounter": "Pick an object from inside the microwave and place it on the counter. The microwave door is already open.",
+            "Terminate": "End of action plan."
+        },
+        "manipulator_checkpoint": "/home/qasim/Projects/results/robocasa/im-bc_xfmr/08-12-lang_cond_policy/seed_123_ds_human-50/models/model_epoch_200.pth"
+    },
+    "observation": {
+        "modalities": {
+            "obs": {
+                "low_dim": [
+                    "robot0_base_to_eef_pos",
+                    "robot0_base_to_eef_quat",
+                    "robot0_base_pos",
+                    "robot0_base_quat",
+                    "robot0_gripper_qpos"
+                ],
+                "rgb": [
+                    "robot0_agentview_left_image",
+                    "robot0_agentview_right_image",
+                    "robot0_eye_in_hand_image"
+                ],
+                "depth": [],
+                "scan": []
+            },
+            "goal": {
+                "low_dim": [],
+                "rgb": [],
+                "depth": [],
+                "scan": []
+            }
+        },
+        "encoder": {
+            "low_dim": {
+                "core_class": null,
+                "core_kwargs": {},
+                "obs_randomizer_class": null,
+                "obs_randomizer_kwargs": {}
+            },
+            "rgb": {
+                "core_class": "VisualCoreLanguageConditioned",
+                "core_kwargs": {
+                    "backbone_class": "ResNet18ConvFiLM"
+                },
+                "obs_randomizer_class": null,
+                "obs_randomizer_kwargs": {
+                    "crop_height": 116,
+                    "crop_width": 116,
+                    "num_crops": 1,
+                    "pos_enc": false
+                }
+            },
+            "depth": {
+                "core_class": "VisualCore",
+                "core_kwargs": {},
+                "obs_randomizer_class": null,
+                "obs_randomizer_kwargs": {}
+            },
+            "scan": {
+                "core_class": "ScanCore",
+                "core_kwargs": {},
+                "obs_randomizer_class": null,
+                "obs_randomizer_kwargs": {}
+            }
+        }
+    },
+    "meta": {
+        "hp_base_config_file": "/home/qasim/Projects/robomimic/robomimic/exps/templates/llm.json",
+        "hp_keys": [
+            "seed",
+            "ds",
+            "obsrandargs"
+        ],
+        "hp_values": [
+            123,
+            "PreSoakPan",
+            {
+                "crop_height": 116,
+                "crop_width": 116,
+                "num_crops": 1,
+                "pos_enc": false
+            }
+        ]
+    }
+}

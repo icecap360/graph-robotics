@@ -1,11 +1,11 @@
 from robomimic.scripts.config_gen.helper import *
 
 def make_generator_helper(args):
-    algo_name_short = "bc_xfmr"
+    algo_name_short = "llm"
 
     generator = get_generator(
-        algo_name="bc",
-        config_file=os.path.join(base_path, 'robomimic/exps/templates/bc_transformer.json'),
+        algo_name="llm",
+        config_file=os.path.join(base_path, 'robomimic/exps/templates/llm.json'),
         args=args,
         algo_name_short=algo_name_short,
         pt=True,
@@ -13,23 +13,19 @@ def make_generator_helper(args):
     if args.ckpt_mode is None:
         args.ckpt_mode = "off"
 
-    ### Multi-task training on atomic tasks ###
-    EVAL_TASKS = ["PnPCounterToSink", "PnPCounterToCab", "TurnOnSinkFaucet"] # or evaluate all tasks by setting EVAL_TASKS = None
     generator.add_param(
         key="train.data",
         name="ds",
         group=123456,
         values_and_names=[
-            (get_ds_cfg("single_stage", src="human", eval=EVAL_TASKS, filter_key="50_demos"), "human-50"), # training on human datasets
-            (get_ds_cfg("single_stage", src="mg", eval=EVAL_TASKS, filter_key="3000_demos"), "mg-3000"), # training on MimicGen datasets
+            # (get_ds_cfg("ArrangeVegetables", gen_tex=False, rand_cams=False, filter_key="50_demos"), "ArrangeVegetables"),
+            # (get_ds_cfg("MicrowaveThawing", gen_tex=False, rand_cams=False, filter_key="50_demos"), "MicrowaveThawing"),
+            # (get_ds_cfg("RestockPantry", gen_tex=False, rand_cams=False, filter_key="50_demos"), "RestockPantry"),
+            (get_ds_cfg("PreSoakPan", gen_tex=False, rand_cams=False, filter_key="50_demos"), "PreSoakPan"),
+            # (get_ds_cfg("PrepareCoffee", gen_tex=False, rand_cams=False, filter_key="50_demos"), "PrepareCoffee"),
         ]
     )
-    generator.add_param(
-        key="algo.language_conditioned",
-        name="",
-        group=-1,
-        values=[True],
-    )
+
     """
     ### Uncomment this code to train composite task policies ###
     generator.add_param(
@@ -57,9 +53,8 @@ def make_generator_helper(args):
     
     """
     ### Uncomment this code to evaluate checkpoints ###
-    """
     generator.add_param(
-        key="train.data",
+        key="train.data,
         name="ds",
         group=1389,
         values_and_names=[
@@ -92,7 +87,7 @@ def make_generator_helper(args):
         group=-1,
         values=[0],
     )
-    
+    """
 
     generator.add_param(
         key="train.output_dir",
@@ -105,6 +100,28 @@ def make_generator_helper(args):
                 algo_name_short=algo_name_short,
             )
         ],
+    )
+
+    generator.add_param(
+        key="train.seq_length",
+        name="",
+        group=-1,
+        values=[10],
+        hidename=True,
+    )
+    generator.add_param(
+        key="experiment.epoch_every_n_steps",
+        name="",
+        group=-1,
+        values=[1],
+        # hidename=True,
+    )
+    generator.add_param(
+        key="experiment.rollout.n",
+        name="",
+        group=-1,
+        values=[1],
+        # hidename=True,
     )
 
     return generator

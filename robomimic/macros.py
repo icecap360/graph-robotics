@@ -9,11 +9,11 @@ DEBUG = False
 VISUALIZE_RANDOMIZER = False
 
 # wandb entity (eg. username or team name)
-WANDB_ENTITY = None
+WANDB_ENTITY = 'muhammad-qasim-ali06'
 
 # wandb api key (obtain from https://wandb.ai/authorize)
 # alternatively, set up wandb from terminal with `wandb login`
-WANDB_API_KEY = None
+WANDB_API_KEY = 'b5353c8c9266cff861ec00110c054264a62de918'
 
 # Key in obs dict used for CLIP language embeddings
 LANG_EMB_KEY = "lang_emb"

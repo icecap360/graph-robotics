@@ -480,23 +480,38 @@ def normalize_dict(dict, normalization_stats):
     """
 
     # ensure we have statistics for each modality key in the dict
-    assert set(dict.keys()).issubset(normalization_stats)
+    # EDIT: Commented out line below because normalization for environment observations is not supported. 
+    # assert set(dict.keys()).issubset(normalization_stats)
 
-    for m in dict:
-        offset = normalization_stats[m]["offset"]
-        scale = normalization_stats[m]["scale"]
+    # EDIT: Changed from looping over dict to looping over normalization_stats. Same reason as above. 
+    keys = list(dict.keys())
+    if 'lang_emb' in keys:
+        keys.remove('lang_emb')
+    if 'pad_mask' in keys:
+        keys.remove('pad_mask')
+    for m in keys:
+        if "offset" in normalization_stats[m]:
+            offset = normalization_stats[m]["offset"]
+            scale = normalization_stats[m]["scale"]
+        else:
+            offset = normalization_stats[m]["mean"]
+            scale = normalization_stats[m]["std"]
 
         # check shape consistency
         shape_len_diff = len(offset.shape) - len(dict[m].shape)
-        assert shape_len_diff in [0, 1], "shape length mismatch in @normalize_dict"
+        if shape_len_diff > 1:
+            print('yoyoy')
+        assert shape_len_diff in [-1, 0, 1], "shape length mismatch in @normalize_dict"
         # if dict has no leading batch dim, check shapes match exactly, else allow first dim to broadcast
-        assert offset.shape[1:] == dict[m].shape[(1 - shape_len_diff):], "shape mismatch in @normalize_dict"
+        assert offset.shape[1:] == dict[m].shape[-(len(offset.shape)-1):], "shape mismatch in @normalize_dict"
 
         # handle case where obs dict is not batched by removing stats batch dimension
         if shape_len_diff == 1:
             offset = offset[0]
             scale = scale[0]
-
+        if shape_len_diff == -1:
+            offset = offset.unsqueeze(0)
+            scale = scale.unsqueeze(0)
         dict[m] = (dict[m] - offset) / scale
 
     return dict

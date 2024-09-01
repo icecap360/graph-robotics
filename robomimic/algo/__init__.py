@@ -11,3 +11,5 @@ from robomimic.algo.iris import IRIS
 from robomimic.algo.td3_bc import TD3_BC
 from robomimic.algo.diffusion_policy import DiffusionPolicyUNet
 from robomimic.algo.act import ACT
+from robomimic.algo.llm import LLM
+# from robomimic.algo.tdmpc2_bc import TDMPC2_BC
